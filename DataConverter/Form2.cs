@@ -1052,6 +1052,47 @@ namespace DataConverter
             }
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            button3.Enabled = false;
+            deleteQueryGroupClientsString();
+        }
+
+        private int deleteQueryGroupClientsString()
+        {
+            if (fbCon.State == ConnectionState.Closed)
+            {
+                try
+                {
+                    fbCon.Open();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Err");
+                }
+            }
+            String insertString = "delete from groupclientsstring where groupclients_id in (76,39,28,161,47,9,38,26,44,46,42,45,18,27,23,79,59,40,5)";
+            FbCommand fbComInsert = new FbCommand(insertString, fbCon);
+            fbComInsert.Transaction = fbTrans;
+            int insRes = 0;
+            try
+            {
+                insRes = fbComInsert.ExecuteNonQuery();
+                // MessageBox.Show("Success", "Insert Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception)
+            {
+                fbTrans.Rollback();
+                this.Close();
+            }
+            finally
+            {
+                fbComInsert.Dispose();
+                fbCon.Close();
+            }
+            return Const.READ_SUCCESS;
+        }
+
 
     }
 }

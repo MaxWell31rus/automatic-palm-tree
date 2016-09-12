@@ -23,9 +23,11 @@ namespace DataConverter
         public FbConnection fbCon;
         bool fbConnection = false;
         bool excelConnecion = false;
+        FormAuthorization formAuth;
 
-        public FormConnection()
+        public FormConnection(FormAuthorization form)
         {
+            formAuth = form;
             InitializeComponent();
             XmlSerializer serializer = new XmlSerializer(typeof(List<String>));
             List<String> lStrDeSer = null;
@@ -58,7 +60,7 @@ namespace DataConverter
             fbConStr.Charset = "WIN1251";
             fbConStr.UserID = login;
             fbConStr.Password = password;
-            fbConStr.Database =/* "192.168.0.84:C:\\Soft\\MapXPlus\\DATABASE\\ECOTRANS_BELGOROD(29.06.2016).GDB";*/database;
+            fbConStr.Database = "185.5.17.46:C:\\Soft\\MapXPlus\\DATABASE\\ecotrans_belgorod.GDB";//database;
             fbConStr.ServerType = 0;
             try
             {
@@ -138,6 +140,22 @@ namespace DataConverter
                 Form2 form2 = new Form2(fbCon, excel);
                 form2.Show(this);
             }
+            else
+            {
+                MessageBox.Show("Проверьте подключение к серверу, и выберете файл для выгрузки", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void FormConnection_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            formAuth.Close();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            Keys formKeys = new Keys();
+            formKeys.Show(this);
+            this.Hide();
         }
 
             
