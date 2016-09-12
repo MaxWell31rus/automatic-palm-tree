@@ -60,7 +60,7 @@ namespace DataConverter
             fbConStr.Charset = "WIN1251";
             fbConStr.UserID = login;
             fbConStr.Password = password;
-            fbConStr.Database = "185.5.17.46:C:\\Soft\\MapXPlus\\DATABASE\\ecotrans_belgorod.GDB";//database;
+            fbConStr.Database = "192.168.0.84:C:\\Soft\\MapXPlus\\DATABASE\\ecotrans_belgorod.GDB";//database;
             fbConStr.ServerType = 0;
             try
             {
