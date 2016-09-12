@@ -47,9 +47,11 @@
             this.button5 = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.button6 = new System.Windows.Forms.Button();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // openFileDialog1
@@ -63,7 +65,7 @@
             this.groupBox2.Controls.Add(this.button3);
             this.groupBox2.Location = new System.Drawing.Point(299, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(135, 231);
+            this.groupBox2.Size = new System.Drawing.Size(153, 231);
             this.groupBox2.TabIndex = 10;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "ExcelFile";
@@ -71,14 +73,14 @@
             // label6
             // 
             this.label6.AutoEllipsis = true;
-            this.label6.Location = new System.Drawing.Point(6, 93);
+            this.label6.Location = new System.Drawing.Point(15, 93);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(123, 91);
             this.label6.TabIndex = 11;
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(15, 198);
+            this.button3.Location = new System.Drawing.Point(24, 198);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(103, 25);
             this.button3.TabIndex = 0;
@@ -207,7 +209,7 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(440, 114);
+            this.button5.Location = new System.Drawing.Point(15, 20);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(103, 25);
             this.button5.TabIndex = 12;
@@ -235,13 +237,23 @@
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.button5);
+            this.groupBox4.Location = new System.Drawing.Point(299, 249);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(153, 51);
+            this.groupBox4.TabIndex = 14;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Выгрузка данных в базу";
+            // 
             // FormConnection
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(549, 312);
+            this.ClientSize = new System.Drawing.Size(465, 312);
+            this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.button5);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "FormConnection";
@@ -251,6 +263,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox3.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -276,6 +289,7 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.GroupBox groupBox4;
     }
 }
 

@@ -33,7 +33,7 @@ namespace DataConverter
             List<String> lStrDeSer = null;
             try
             {
-                TextReader fileStream = new StreamReader("LoginData.xml");
+                TextReader fileStream = new StreamReader("IniData\\LoginData.xml");
                 lStrDeSer = new List<String>();
                 lStrDeSer = (List<String>)serializer.Deserialize(fileStream);
                 fileStream.Close();

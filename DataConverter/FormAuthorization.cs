@@ -13,7 +13,7 @@ namespace DataConverter
 {
     public partial class FormAuthorization : Form
     {
-        private String stringAuthData = "192.168.0.84:C:\\Soft\\MapXPlus\\DATABASE\\authdata";
+        private String stringAuthData = "IniData\\authData";
         FormConnection formCon;
         public FormAuthorization()
         {            
@@ -22,7 +22,7 @@ namespace DataConverter
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //TextReader streamAuthData = new StreamReader(stringAuthData);
+            
             if(String.Compare(textBox1.Text,"")==0 && String.Compare(textBox2.Text,"")==0)
             {
                 formCon = new FormConnection(this);
@@ -33,6 +33,13 @@ namespace DataConverter
             {
                 MessageBox.Show("Неправильно введена пара логин,пароль", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private int authDataFinder()
+        {
+            String authDataToCheck = null;
+            TextReader streamAuthData = new StreamReader(stringAuthData);
+            return Const.READ_SUCCESS;
         }
     }
 }

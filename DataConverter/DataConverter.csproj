@@ -133,6 +133,7 @@
     <Compile Include="Keys.Designer.cs">
       <DependentUpon>Keys.cs</DependentUpon>
     </Compile>
+    <Compile Include="User.cs" />
     <EmbeddedResource Include="Form2.resx">
       <DependentUpon>Form2.cs</DependentUpon>
     </EmbeddedResource>
