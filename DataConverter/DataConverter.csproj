@@ -101,11 +101,17 @@
   <ItemGroup>
     <Compile Include="CONSTANTS.cs" />
     <Compile Include="Data.cs" />
-    <Compile Include="Form2.cs">
+    <Compile Include="DispatcherPanel.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form2.Designer.cs">
-      <DependentUpon>Form2.cs</DependentUpon>
+    <Compile Include="DispatcherPanel.Designer.cs">
+      <DependentUpon>DispatcherPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormUpload.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormUpload.Designer.cs">
+      <DependentUpon>FormUpload.cs</DependentUpon>
     </Compile>
     <Compile Include="FormAuthorization.cs">
       <SubType>Form</SubType>
@@ -113,11 +119,11 @@
     <Compile Include="FormAuthorization.Designer.cs">
       <DependentUpon>FormAuthorization.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormConnection.cs">
+    <Compile Include="AdminPanel.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormConnection.Designer.cs">
-      <DependentUpon>FormConnection.cs</DependentUpon>
+    <Compile Include="AdminPanel.Designer.cs">
+      <DependentUpon>AdminPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="GPS.cs">
       <SubType>Form</SubType>
@@ -125,26 +131,46 @@
     <Compile Include="GPS.Designer.cs">
       <DependentUpon>GPS.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Keys.cs">
+    <Compile Include="LogistPanel.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Keys.Designer.cs">
-      <DependentUpon>Keys.cs</DependentUpon>
+    <Compile Include="LogistPanel.Designer.cs">
+      <DependentUpon>LogistPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="User.cs" />
-    <EmbeddedResource Include="Form2.resx">
-      <DependentUpon>Form2.cs</DependentUpon>
+    <Compile Include="FormPlatformReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormPlatformReport.Designer.cs">
+      <DependentUpon>FormPlatformReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FormKeysReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormKeysReport.Designer.cs">
+      <DependentUpon>FormKeysReport.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="DispatcherPanel.resx">
+      <DependentUpon>DispatcherPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormUpload.resx">
+      <DependentUpon>FormUpload.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormAuthorization.resx">
       <DependentUpon>FormAuthorization.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormConnection.resx">
-      <DependentUpon>FormConnection.cs</DependentUpon>
+    <EmbeddedResource Include="AdminPanel.resx">
+      <DependentUpon>AdminPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GPS.resx">
       <DependentUpon>GPS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LogistPanel.resx">
+      <DependentUpon>LogistPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormPlatformReport.resx">
+      <DependentUpon>FormPlatformReport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -155,8 +181,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Keys.resx">
-      <DependentUpon>Keys.cs</DependentUpon>
+    <EmbeddedResource Include="FormKeysReport.resx">
+      <DependentUpon>FormKeysReport.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

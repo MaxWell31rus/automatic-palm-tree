@@ -1,6 +1,6 @@
 ﻿namespace DataConverter
 {
-    partial class Form2
+    partial class FormUpload
     {
         /// <summary>
         /// Required designer variable.
@@ -148,7 +148,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(565, 142);
+            this.ClientSize = new System.Drawing.Size(565, 141);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "Form2";

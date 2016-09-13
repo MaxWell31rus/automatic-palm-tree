@@ -13,7 +13,7 @@ using System.IO;
 
 namespace DataConverter
 {
-    public partial class Form2 : Form
+    public partial class FormUpload : Form
     {
         FbTransaction fbTrans = null;
         FbConnection fbCon = null;
@@ -24,9 +24,10 @@ namespace DataConverter
         Microsoft.Office.Interop.Excel.Application ObjExcel;
         Microsoft.Office.Interop.Excel.Workbook ObjWorkBook;
 
-        public Form2(FbConnection FbCon, String Excel)
+        public FormUpload(FbConnection FbCon, String Excel)
         {
             fbCon = FbCon;
+            fbCon.Open();
             fbTrans = fbCon.BeginTransaction();
             excel = Excel;
             InitializeComponent();
@@ -1045,6 +1046,8 @@ namespace DataConverter
             {
                 ObjWorkBook.Close();
                 ObjExcel.Quit();
+                fbTrans.Commit();
+                fbCon.Close();
             }
             catch (Exception ex)
             {

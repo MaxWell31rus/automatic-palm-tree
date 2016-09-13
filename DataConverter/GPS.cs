@@ -22,6 +22,7 @@ namespace DataConverter
         {
             fbCon = paramFbcon;
             InitializeComponent();
+            fbCon.Open();
             fbTrans = fbCon.BeginTransaction();
         }
 
