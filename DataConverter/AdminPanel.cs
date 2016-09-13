@@ -25,6 +25,9 @@ namespace DataConverter
             formAuth = form;
             InitializeComponent();
             MessageBox.Show("Вы успешно авторизовались как Администратор", "Авторизация", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            comboBox1.SelectedIndex = 0;
+            comboBox2.SelectedIndex = 0;
+            comboBox3.SelectedIndex = 0;
             fbCon = con;
         }
 

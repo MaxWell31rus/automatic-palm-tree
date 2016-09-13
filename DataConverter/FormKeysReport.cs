@@ -19,7 +19,8 @@ namespace DataConverter
         {
             InitializeComponent();
             fbCon = con;
-            fbCon.Open();
+            if (fbCon.State == ConnectionState.Closed)
+                fbCon.Open();
             fbTrans = fbCon.BeginTransaction();
         }
 
