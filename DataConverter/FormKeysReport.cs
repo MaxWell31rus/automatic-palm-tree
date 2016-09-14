@@ -29,6 +29,15 @@ namespace DataConverter
         private void Keys_FormClosing(object sender, FormClosingEventArgs e)
         {
             Owner.Show();
+            try
+            {
+                fbTrans.Commit();
+            }
+            finally
+            {
+                fbCon.Close();
+                fbTrans.Dispose();
+            }
         }
 
 
@@ -112,6 +121,12 @@ namespace DataConverter
         private void button1_Click(object sender, EventArgs e)
         {
             selectKeys();
+        }
+
+        private void FormKeysReport_Load(object sender, EventArgs e)
+        {
+
+            this.reportViewer1.RefreshReport();
         }
     }
 }
