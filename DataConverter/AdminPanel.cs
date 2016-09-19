@@ -18,7 +18,6 @@ namespace DataConverter
         public String excel;
         FormAuthorization formAuth;
         FbConnection fbCon;
-        FbTransaction fbTrans;
         bool excelConnection;
 
         public AdminPanel(FormAuthorization form,FbConnection con)
@@ -30,9 +29,6 @@ namespace DataConverter
             comboBox2.SelectedIndex = 0;
             comboBox3.SelectedIndex = 0;
             fbCon = con;
-            if (fbCon.State == ConnectionState.Closed)
-                fbCon.Open();
-            fbTrans = fbCon.BeginTransaction();
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -80,154 +76,6 @@ namespace DataConverter
         {
             FormPlatformReport formReport = new FormPlatformReport(fbCon);
             formReport.Show();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            if(selectCountQueryAccauntsLogin(textBox1.Text)==0)
-            {
-                insertQueryAccData(selectQueryMaxAccauntId()+1);
-            }
-            else
-            {
-                MessageBox.Show("Данный Логин занят", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-        }
-
-        private int selectCountQueryAccauntsLogin(String id)
-        {
-            if (fbCon.State == ConnectionState.Closed)
-            {
-                try
-                {
-                    fbCon.Open();
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show("Err");
-                }
-            }
-            String selectString = "SELECT COUNT(ID) FROM DC_ACCAUNTS WHERE LOGIN = '" + id + "' GROUP BY ID";
-            FbCommand fbComSelect = new FbCommand(selectString, fbCon);
-            fbComSelect.Transaction = fbTrans;
-            int selectResult = 0;
-            try
-            {
-                object obj = fbComSelect.ExecuteScalar();
-                if (obj != null)
-                {
-                    selectResult = Convert.ToInt32(obj.ToString());
-                }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
-            finally
-            {
-                fbComSelect.Dispose();
-            }
-            return selectResult;
-        }
-
-        private int selectQueryMaxAccauntId()
-        {
-            if (fbCon.State == ConnectionState.Closed)
-            {
-                try
-                {
-                    fbCon.Open();
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show("Err");
-                }
-            }
-            String selectString = "SELECT MAX(ID) FROM DC_ACCAUNTS";
-            FbCommand fbComSelect = new FbCommand(selectString, fbCon);
-            fbComSelect.Transaction = fbTrans;
-            int selectResult = 0;
-            try
-            {
-                selectResult = Convert.ToInt32(fbComSelect.ExecuteScalar().ToString());
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
-            finally
-            {
-                fbComSelect.Dispose();
-            }
-            if (selectResult != 0)
-            {
-                return selectResult;
-            }
-            else
-            {
-                return Const.READ_ERROR;
-            }
-        }
-
-        private int insertQueryAccData(int id)
-        {
-            if (fbCon.State == ConnectionState.Closed)
-            {
-                try
-                {
-                    fbCon.Open();
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show("Err");
-                }
-            }
-            String insertString = "INSERT INTO DC_ACCAUNTS (ID,LOGIN,PASSWORD,ROLE) VALUES('" + id.ToString() + "','" + textBox1.Text + "','"+textBox2.Text+"','"+comboBox1.Text+"')";
-            FbCommand fbComInsert = new FbCommand(insertString, fbCon);
-            fbComInsert.Transaction = fbTrans;
-            int insRes = 0;
-            try
-            {
-                insRes = fbComInsert.ExecuteNonQuery();
-                if (insRes == 1)
-                {
-                    MessageBox.Show("Добавление новой учетной записи успешно", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch (Exception e)
-            {
-                fbTrans.Rollback();
-                MessageBox.Show("Insert Error:" + e.Message + "\nЗапись приостановлена", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.Close();
-            }
-            finally
-            {
-                fbComInsert.Dispose();
-                fbCon.Close();
-            }
-            if (insRes == 1)
-                return Const.READ_SUCCESS;
-            else
-                return Const.READ_ERROR;
-        }
-
-        private void button8_Click(object sender, EventArgs e)
-        {
-            switch(comboBox3.Text)
-            {
-                case "Диспетчер":
-                    {
-                        DispatcherPanel formDisp = new DispatcherPanel(this,fbCon);
-                        formDisp.Show();
-                        break;
-                    }
-                case "Логист":
-                    {
-                        LogistPanel formLogist = new LogistPanel(this, fbCon);
-                        formLogist.Show();
-                        break;
-                    }
-            }
         }
 
             

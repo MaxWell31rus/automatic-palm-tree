@@ -13,10 +13,8 @@ namespace DataConverter
 {
     public partial class LogistPanel : Form
     {
-        AdminPanel formAdmin;
         FormAuthorization formAuth;
         FbConnection fbCon;
-        bool bAdmIn = false;
         public LogistPanel(FormAuthorization form, FbConnection con)
         {
             InitializeComponent();
@@ -25,18 +23,8 @@ namespace DataConverter
             fbCon = con;
         }
 
-        public LogistPanel(AdminPanel form, FbConnection con)
-        {
-            InitializeComponent();
-            formAdmin = form;
-            MessageBox.Show("Вы успешно авторизовались как Логист", "Авторизация", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-            fbCon = con;
-            bAdmIn = true;
-        }
-
         private void LogistPanel_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(!bAdmIn)
             formAuth.Close();
         }
     }

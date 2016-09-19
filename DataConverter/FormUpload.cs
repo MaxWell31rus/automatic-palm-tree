@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using FirebirdSql.Data.FirebirdClient;
 using System.Xml.Serialization;
 using System.IO;
+using System.Threading;
 
 namespace DataConverter
 {
@@ -872,6 +873,7 @@ namespace DataConverter
 
         private void button1_Click(object sender, EventArgs e)
         {
+            Thread threadUpload = new Thread(threadUploadMain);
             int id = selectQueryMaxClientsId() + 1;
             int i = 10;
             List<Data> lData = new List<Data>();
@@ -1096,6 +1098,11 @@ namespace DataConverter
             return Const.READ_SUCCESS;
         }
 
+
+        static void threadUploadMain()
+        {
+
+        }
 
     }
 }

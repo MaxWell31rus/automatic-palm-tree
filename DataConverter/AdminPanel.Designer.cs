@@ -141,6 +141,9 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox4.Controls.Add(this.label8);
             this.groupBox4.Controls.Add(this.comboBox3);
             this.groupBox4.Controls.Add(this.button9);
@@ -189,6 +192,7 @@
             this.comboBox3.FormattingEnabled = true;
             this.comboBox3.Items.AddRange(new object[] {
             "Логист",
+            "Администратор",
             "Диспетчер"});
             this.comboBox3.Location = new System.Drawing.Point(291, 37);
             this.comboBox3.Name = "comboBox3";
@@ -217,7 +221,6 @@
             this.button8.TabIndex = 24;
             this.button8.Text = "Войти как";
             this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
             // button7
             // 
@@ -320,7 +323,6 @@
             this.button1.TabIndex = 13;
             this.button1.Text = "Добавить";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // label3
             // 
