@@ -18,7 +18,7 @@ namespace DataConverter
         public String excel;
         FormAuthorization formAuth;
         FbConnection fbCon;
-        bool excelConnection;
+        public bool excelConnection;
 
         public AdminPanel(FormAuthorization form,FbConnection con)
         {
@@ -46,15 +46,8 @@ namespace DataConverter
 
         private void button5_Click(object sender, EventArgs e)
         {
-            if (excelConnection)
-            {
-                FormUpload form2 = new FormUpload(fbCon, excel);
-                form2.Show(this);
-            }
-            else
-            {
-                MessageBox.Show("Проверьте подключение к серверу, и выберете файл для выгрузки", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+                FormUpload form2 = new FormUpload(fbCon, excel,excelConnection);
+                form2.Show(this);           
         }
 
         private void AdminPanel_FormClosing(object sender, FormClosingEventArgs e)
