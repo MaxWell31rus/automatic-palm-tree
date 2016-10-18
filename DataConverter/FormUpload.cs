@@ -15,6 +15,7 @@ namespace DataConverter
 {
     public partial class FormUpload : Form
     {
+        List<List<String>> listTimes = new List<List<String>>();
         FbTransaction fbTrans = null;
         FbConnection fbCon = null;
         String excel = null;
@@ -23,17 +24,22 @@ namespace DataConverter
         Microsoft.Office.Interop.Excel.Worksheet ObjWorkSheet;
         Microsoft.Office.Interop.Excel.Application ObjExcel;
         Microsoft.Office.Interop.Excel.Workbook ObjWorkBook;
+        bool excelConnection;
 
-        public FormUpload(FbConnection FbCon, String Excel)
+        public FormUpload(FbConnection FbCon, String Excel,bool b)
         {
+            excelConnection = b;
             fbCon = FbCon;
             fbCon.Open();
             fbTrans = fbCon.BeginTransaction();
             excel = Excel;
             InitializeComponent();
-            ObjExcel = new Microsoft.Office.Interop.Excel.Application();
-            ObjWorkBook = ObjExcel.Workbooks.Open(excel, 0, false, 5, "", "", false, Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "", true, false, 0, true, false, false);
-            ObjWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)ObjWorkBook.Sheets[1];
+            if (b)
+            {
+                ObjExcel = new Microsoft.Office.Interop.Excel.Application();
+                ObjWorkBook = ObjExcel.Workbooks.Open(excel, 0, false, 5, "", "", false, Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "", true, false, 0, true, false, false);
+                ObjWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)ObjWorkBook.Sheets[1];
+            }
         }
 
         private int excelDataToList(int id, List<Data> lData, Data data)
@@ -872,170 +878,177 @@ namespace DataConverter
 
         private void button1_Click(object sender, EventArgs e)
         {
-            int id = selectQueryMaxClientsId() + 1;
-            int i = 10;
-            List<Data> lData = new List<Data>();
-            Data tmp;
-            if (checkBox1.Checked == true)
+            if (excelConnection)
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(List<Data>));
-                TextReader fileStream = new StreamReader("Backup.xml");
-                lData = (List<Data>)serializer.Deserialize(fileStream);
-                fileStream.Close();
-            }
+                int id = selectQueryMaxClientsId() + 1;
+                int i = 10;
+                List<Data> lData = new List<Data>();
+                Data tmp;
+                if (checkBox1.Checked == true)
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(List<Data>));
+                    TextReader fileStream = new StreamReader("Backup.xml");
+                    lData = (List<Data>)serializer.Deserialize(fileStream);
+                    fileStream.Close();
+                }
+                else
+                {
+                    while (true)
+                    {
+                        tmp = new Data();
+                        i = excelDataToList(i, lData, tmp);
+                        if (i != -1)
+                        {
+                            lData.Add(tmp);
+                            label1.Text = (i - 10).ToString();
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    XmlSerializer serializer = new XmlSerializer(typeof(List<Data>));
+                    TextWriter fileStream = new StreamWriter("Backup.xml");
+                    serializer.Serialize(fileStream, lData);
+                    fileStream.Close();
+                }
+                int groupId = selectQueryMaxGroupClientsId() + 1;
+                for (i = 0; i < lGroupsClients.Count; i++)
+                {
+                    if (selectCountQueryGroupClientsId(lGroupsClients[i]) == 0)
+                    {
+                        if (InsertQueryGROUPCLIENTS(groupId + i, lGroupsClients[i]) == Const.READ_ERROR)
+                            return;
+                    }
+                    else
+                    {
+                        int x = selectQueryGroupClientsId(lGroupsClients[i]);
+                        delete(x.ToString());
+                    }
+                }
+                for (i = 0; i < lData.Count; i++)
+                {
+                    if (selectCountQueryClientsId(lData[i].CPCode) == 0)
+                    {
+                        if (InsertQueryCLIENTS(lData[i], id + i) == Const.READ_ERROR)
+                            break;
+                        switch (lData[i].CPSchedule[0])
+                        {
+                            case "1":
+                                {
+                                    for (int j = 1; j < lData[i].CPSchedule.Count; j += 2)
+                                    {
+                                        if (InsertQuerySCHEDULE(Data.convertWeekToNmb(lData[i].CPSchedule[j + 1]), lData[i].CPSchedule[j], id + i) == Const.READ_ERROR)
+                                        {
+                                            i = lData.Count;
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                            case "2":
+                                {
+                                    for (int k = 0; k < Const.NMB_WEEK.Count; k++)
+                                    {
+                                        for (int j = 1; j < lData[i].CPSchedule.Count; j++)
+                                        {
+                                            if (InsertQuerySCHEDULE(Data.convertWeekToNmb(lData[i].CPSchedule[j]), Const.NMB_WEEK[k], id + i) == Const.READ_ERROR)
+                                            {
+                                                i = lData.Count;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    break;
+                                }
+                            case "3":
+                                {
+                                    for (int j = 1; j < lData[i].CPSchedule.Count; j++)
+                                    {
+                                        if (InsertQueryDAYMONTH(lData[i].CPSchedule[j], id + i, lData[i].CPUsed) == Const.READ_ERROR)
+                                        {
+                                            i = lData.Count;
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                        }
+                        /*             dsadasdsadasdasdasd                     */
+                        if (InsertQueryGROUPCLIENTSSTRING(i + id, lData[i]) == Const.READ_ERROR)
+                            break;
+                    }
+                    else
+                    {
+                        int updId = selectQueryClientsId(lData[i].CPCode);
+                        if (UpdateQueryCLIENTS(lData[i], updId) == Const.READ_ERROR)
+                            break;
+                        switch (lData[i].CPSchedule[0])
+                        {
+                            case "1":
+                                {
+                                    deleteQuerySCHEDULE(updId);
+                                    for (int j = 1; j < lData[i].CPSchedule.Count; j += 2)
+                                    {
+                                        if (InsertQuerySCHEDULE(Data.convertWeekToNmb(lData[i].CPSchedule[j + 1]), lData[i].CPSchedule[j], updId) == Const.READ_ERROR)
+                                        {
+                                            i = lData.Count;
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                            case "2":
+                                {
+                                    deleteQuerySCHEDULE(updId);
+                                    for (int k = 0; k < Const.NMB_WEEK.Count; k++)
+                                    {
+                                        for (int j = 1; j < lData[i].CPSchedule.Count; j++)
+                                        {
+
+                                            if (InsertQuerySCHEDULE(Data.convertWeekToNmb(lData[i].CPSchedule[j]), Const.NMB_WEEK[k], updId) == Const.READ_ERROR)
+                                            {
+                                                i = lData.Count;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    break;
+                                }
+                            case "3":
+                                {
+                                    deleteQueryDAYMONTH(updId);
+                                    for (int j = 1; j < lData[i].CPSchedule.Count; j++)
+                                    {
+                                        if (InsertQueryDAYMONTH(lData[i].CPSchedule[j], updId, lData[i].CPUsed) == Const.READ_ERROR)
+                                        {
+                                            i = lData.Count;
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                        }
+                        int cnt = selectCountQueryGroupClientsStringId(updId.ToString());
+                        if (cnt != 0)
+                        {
+                            if (UpdateQueryGROUPCLIENTSSTRING(updId, lData[i]) == Const.READ_ERROR)
+                                break;
+                        }
+                        else
+                        {
+                            if (InsertQueryGROUPCLIENTSSTRING(updId, lData[i]) == Const.READ_ERROR)
+                                break;
+                        }
+
+                    }
+                    label2.Text = (i + 1).ToString() + "/" + lData.Count.ToString();
+                    this.Refresh();
+                }
+            }           
             else
             {
-                while (true)
-                {
-                    tmp = new Data();
-                    i = excelDataToList(i, lData, tmp);
-                    if (i != -1)
-                    {
-                        lData.Add(tmp);
-                        label1.Text = (i-10).ToString();
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                XmlSerializer serializer = new XmlSerializer(typeof(List<Data>));
-                TextWriter fileStream = new StreamWriter("Backup.xml");
-                serializer.Serialize(fileStream, lData);
-                fileStream.Close();
-            }
-            int groupId = selectQueryMaxGroupClientsId() + 1;
-            for (i = 0; i < lGroupsClients.Count; i++)
-            {                
-                if (selectCountQueryGroupClientsId(lGroupsClients[i]) == 0)
-                {
-                    if (InsertQueryGROUPCLIENTS(groupId + i, lGroupsClients[i]) == Const.READ_ERROR)
-                        return;
-                }
-                else
-                {
-                    int x = selectQueryGroupClientsId(lGroupsClients[i]);
-                    delete(x.ToString());
-                }
-            }
-            for (i = 0; i < lData.Count; i++)
-            {
-                if (selectCountQueryClientsId(lData[i].CPCode) == 0)
-                {
-                    if (InsertQueryCLIENTS(lData[i], id + i) == Const.READ_ERROR)
-                        break;
-                    switch (lData[i].CPSchedule[0])
-                    {
-                        case "1":
-                            {
-                                for (int j = 1; j < lData[i].CPSchedule.Count; j += 2)
-                                {
-                                    if (InsertQuerySCHEDULE(Data.convertWeekToNmb(lData[i].CPSchedule[j + 1]), lData[i].CPSchedule[j], id + i) == Const.READ_ERROR)
-                                    {
-                                        i = lData.Count;
-                                        break;
-                                    }
-                                }
-                                break;
-                            }
-                        case "2":
-                            {
-                                for (int k = 0; k < Const.NMB_WEEK.Count; k++)
-                                {
-                                    for (int j = 1; j < lData[i].CPSchedule.Count; j++)
-                                    {
-                                        if (InsertQuerySCHEDULE(Data.convertWeekToNmb(lData[i].CPSchedule[j]), Const.NMB_WEEK[k], id + i) == Const.READ_ERROR)
-                                        {
-                                            i = lData.Count;
-                                            break;
-                                        }
-                                    }
-                                }
-                                break;
-                            }
-                        case "3":
-                            {
-                                for (int j = 1; j < lData[i].CPSchedule.Count; j++)
-                                {
-                                    if (InsertQueryDAYMONTH(lData[i].CPSchedule[j], id + i, lData[i].CPUsed) == Const.READ_ERROR)
-                                    {
-                                        i = lData.Count;
-                                        break;
-                                    }
-                                }
-                                break;
-                            }
-                    }
-                    /*             dsadasdsadasdasdasd                     */
-                    if (InsertQueryGROUPCLIENTSSTRING(i + id, lData[i]) == Const.READ_ERROR)
-                        break;
-                }
-                else
-                {
-                    int updId = selectQueryClientsId(lData[i].CPCode);
-                    if (UpdateQueryCLIENTS(lData[i], updId) == Const.READ_ERROR)
-                        break;
-                    switch (lData[i].CPSchedule[0])
-                    {
-                        case "1":
-                            {
-                                deleteQuerySCHEDULE(updId);
-                                for (int j = 1; j < lData[i].CPSchedule.Count; j += 2)
-                                {
-                                    if (InsertQuerySCHEDULE(Data.convertWeekToNmb(lData[i].CPSchedule[j + 1]), lData[i].CPSchedule[j], updId) == Const.READ_ERROR)
-                                    {
-                                        i = lData.Count;
-                                        break;
-                                    }
-                                }
-                                break;
-                            }
-                        case "2":
-                            {
-                                deleteQuerySCHEDULE(updId);
-                                for (int k = 0; k < Const.NMB_WEEK.Count; k++)
-                                {
-                                    for (int j = 1; j < lData[i].CPSchedule.Count; j++)
-                                    {
-                                        
-                                        if (InsertQuerySCHEDULE(Data.convertWeekToNmb(lData[i].CPSchedule[j]), Const.NMB_WEEK[k], updId) == Const.READ_ERROR)
-                                        {
-                                            i = lData.Count;
-                                            break;
-                                        }
-                                    }
-                                }
-                                break;
-                            }
-                        case "3":
-                            {
-                                deleteQueryDAYMONTH(updId);
-                                for (int j = 1; j < lData[i].CPSchedule.Count; j++)
-                                {
-                                    if (InsertQueryDAYMONTH(lData[i].CPSchedule[j], updId, lData[i].CPUsed) == Const.READ_ERROR)
-                                    {
-                                        i = lData.Count;
-                                        break;
-                                    }
-                                }
-                                break;
-                            }
-                    }
-                    int cnt = selectCountQueryGroupClientsStringId(updId.ToString());
-                    if (cnt != 0)
-                    {
-                        if (UpdateQueryGROUPCLIENTSSTRING(updId, lData[i]) == Const.READ_ERROR)
-                            break;
-                    }
-                    else
-                    {
-                        if (InsertQueryGROUPCLIENTSSTRING(updId, lData[i]) == Const.READ_ERROR)
-                            break;
-                    }
-
-                }
-                label2.Text = (i + 1).ToString() + "/" + lData.Count.ToString();
-                this.Refresh();
+                MessageBox.Show("Проверьте подключение к серверу, и выберете файл для выгрузки", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -1074,7 +1087,7 @@ namespace DataConverter
                     MessageBox.Show("Err");
                 }
             }
-            String insertString = "delete from groupclientsstring where groupclients_id in (76,39,28,161,47,9,38,26,44,46,42,45,18,27,23,79,59,40,5)";
+            String insertString = "delete from groupclientsstring where id in( select groupclientsstring.id from groupclientsstring left join groupclients on groupclients.id = groupclientsstring.groupclients_id where groupclients.region_type_id = 5 and groupclientsstring.groupclients_id <> 163 )";
             FbCommand fbComInsert = new FbCommand(insertString, fbCon);
             fbComInsert.Transaction = fbTrans;
             int insRes = 0;
@@ -1096,6 +1109,148 @@ namespace DataConverter
             return Const.READ_SUCCESS;
         }
 
+        private void button4_Click(object sender, EventArgs e)
+        {
+            selectTimes();
+            for (int i = 0; i < listTimes.Count; i++)
+            {
+                insertTimes((Convert.ToDateTime(listTimes[i][1]).AddMinutes(-30)).ToString(), (Convert.ToDateTime(listTimes[i][1]).AddMinutes(30)).ToString(), listTimes[i][0]);
+            }
+        }
 
+        private void selectTimes()
+        {            
+            if (fbCon.State == ConnectionState.Closed)
+            {
+                try
+                {
+                    fbCon.Open();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Err");
+                }
+            }
+            String selectString = "select " +
+                                  "c.id as code, " +
+                                  "ts.reason_time as fact_time " +
+                                  "from travelsheet_model  tm " +
+                                    " left join travelsheet t on t.travelsheet_model_id=tm.id" +
+                                    " left join travelsheetstring ts on ts.travel_id=t.id" +                                   
+                                    " left join clients c on c.id=ts.client_id" +
+                                    " left join variables_string v on v.client_id = c.id" +
+                                  " where tm.model_name_id is not null and t.status = '5' and t.docdate >= '" + dateTimePicker1.Value.ToShortDateString() + "' and t.docdate <= '" + dateTimePicker1.Value.ToShortDateString() + "' and v.variables_id = '61'and ts.reason_time is not null";
+            FbCommand fbComSelect = new FbCommand(selectString, fbCon);
+            fbComSelect.Transaction = fbTrans;
+            FbDataReader selectResult = null;
+            try
+            {
+                selectResult = fbComSelect.ExecuteReader();
+                while (selectResult.Read())
+                {
+                    listTimes.Add(new List<String>());
+                    listTimes[listTimes.Count - 1].Add(String.Copy(selectResult.GetString(0)));
+                    listTimes[listTimes.Count - 1].Add(String.Copy(selectResult.GetString(1)));                   
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+            finally
+            {
+                fbComSelect.Dispose();
+                selectResult.Dispose();
+                fbTrans.Dispose();
+                fbCon.Close();
+            }           
+        }
+
+        private int insertTimes(string time1,string time2,string id)
+        {
+            if (fbCon.State == ConnectionState.Closed)
+            {
+                try
+                {
+                    fbCon.Open();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Err");
+                }
+            }
+            String insertString = "update clients set uplimtime0='" + Convert.ToDateTime(time1).ToShortTimeString() + "',dnlimtime0='" + Convert.ToDateTime(time2).ToShortTimeString() + "' where id = '" + id + "'";
+            FbCommand fbComInsert = new FbCommand(insertString, fbCon);
+            fbComInsert.Transaction = fbTrans;
+            int insRes = 0;
+            try
+            {
+                insRes = fbComInsert.ExecuteNonQuery();
+                
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Success", e.Message, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.Close();
+            }
+            finally
+            {
+                fbComInsert.Dispose();
+                fbCon.Close();
+            }
+            return Const.READ_SUCCESS;
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            updatePriority(true);
+            updatePriority(false);
+        }
+
+        private int updatePriority(bool bAfter)
+        {
+            if (fbCon.State == ConnectionState.Closed)
+            {
+                try
+                {
+                    fbCon.Open();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Err");
+                }
+            }
+            String insertString;
+            if (bAfter)
+            {
+                insertString = "update clients c set c.priorities_id=12 where c.id in  (select c.id from  clients c where c.dnlimtime0<>'' and " +
+                               "c.dnlimtime0<>'00:00' and cast (c.dnlimtime0 as time)<='13:00')";
+            }
+            else
+            {
+                insertString = "update clients c set c.priorities_id=13 where c.id in  (select c.id from  clients c where c.dnlimtime0<>'' and " +
+                               "c.dnlimtime0<>'00:00' and cast (c.dnlimtime0 as time)>='13:00')";
+            }
+            FbCommand fbComInsert = new FbCommand(insertString, fbCon);
+            fbComInsert.Transaction = fbTrans;
+            int insRes = 0;
+            try
+            {
+                insRes = fbComInsert.ExecuteNonQuery();
+
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message,"Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                fbTrans.Rollback();
+                this.Close();
+            }
+            finally
+            {
+                fbComInsert.Dispose();
+                fbCon.Close();
+            }
+            return Const.READ_SUCCESS;
+        }
     }
 }
