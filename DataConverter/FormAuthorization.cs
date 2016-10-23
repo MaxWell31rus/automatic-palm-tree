@@ -28,11 +28,7 @@ namespace DataConverter
 
         private void button1_Click(object sender, EventArgs e)
         {
-            formAdmin = new AdminPanel(this, fbCon);
-            fbCon.Close();
-            formAdmin.Show();
-            this.Hide();
-            /*String role = null;
+            String role = null;
             role = authDataFinder(textBox1.Text,textBox2.Text);
             if(role != null)
             {
@@ -65,7 +61,7 @@ namespace DataConverter
             else
             {
                 MessageBox.Show("Неправильно введена пара логин,пароль", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }*/
+            }
         }
 
         private void ConnectionON()
@@ -74,7 +70,7 @@ namespace DataConverter
             fbConStr.Charset = "WIN1251";
             fbConStr.UserID = "SYSDBA";
             fbConStr.Password = "masterkey";
-            fbConStr.Database = "192.168.0.84:C:\\Soft\\MapXPlus\\DATABASE\\ecotrans_belgorod.GDB";
+            fbConStr.Database = "localhost:C:\\Users\\Виталик\\Desktop\\работа\\Новая папка (3)\\ecotrans_belgorod.gdb";//"192.168.0.84:C:\\Soft\\MapXPlus\\DATABASE\\ecotrans_belgorod.GDB";
             fbConStr.ServerType = 0;
             try
             {
