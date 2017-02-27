@@ -19,13 +19,15 @@ namespace DataConverter
         FormAuthorization formAuth;
         FbConnection fbCon;
         public bool excelConnection;
+        string login;
 
-        public AdminPanel(FormAuthorization form,FbConnection con)
+        public AdminPanel(FormAuthorization form,FbConnection con,string Login)
         {
             formAuth = form;
             InitializeComponent();
             MessageBox.Show("Вы успешно авторизовались как Администратор", "Авторизация", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             fbCon = con;
+            login = Login;
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -40,7 +42,6 @@ namespace DataConverter
         private void button4_Click(object sender, EventArgs e)
         {
             GPS formGPS = new GPS(fbCon);
-            this.Hide();
             formGPS.Show(this);
         }
 
@@ -66,6 +67,18 @@ namespace DataConverter
         {
             FormPlatformReport formReport = new FormPlatformReport(fbCon);
             formReport.Show();
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            ForDispatcher formForDisp = new ForDispatcher(fbCon);
+            formForDisp.Show();
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            ExcelAnalysis formExcelAnalysis = new ExcelAnalysis();
+            formExcelAnalysis.Show();
         }
 
             

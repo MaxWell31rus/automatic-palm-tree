@@ -107,6 +107,18 @@
     <Compile Include="DispatcherPanel.Designer.cs">
       <DependentUpon>DispatcherPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="ExcelAnalysis.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ExcelAnalysis.Designer.cs">
+      <DependentUpon>ExcelAnalysis.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ForDispatcher.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ForDispatcher.Designer.cs">
+      <DependentUpon>ForDispatcher.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormUpload.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -153,6 +165,12 @@
     </Compile>
     <EmbeddedResource Include="DispatcherPanel.resx">
       <DependentUpon>DispatcherPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExcelAnalysis.resx">
+      <DependentUpon>ExcelAnalysis.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ForDispatcher.resx">
+      <DependentUpon>ForDispatcher.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormUpload.resx">
       <DependentUpon>FormUpload.cs</DependentUpon>

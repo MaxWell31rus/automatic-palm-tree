@@ -26,7 +26,7 @@ namespace DataConverter
         Microsoft.Office.Interop.Excel.Workbook ObjWorkBook;
         bool excelConnection;
 
-        public FormUpload(FbConnection FbCon, String Excel,bool b)
+        public FormUpload(FbConnection FbCon, String Excel, bool b)
         {
             excelConnection = b;
             fbCon = FbCon;
@@ -105,7 +105,6 @@ namespace DataConverter
             finally
             {
                 fbComInsert.Dispose();
-                fbCon.Close();
             }
             if (insRes == 1)
                 return Const.READ_SUCCESS;
@@ -148,7 +147,6 @@ namespace DataConverter
             finally
             {
                 fbComInsert.Dispose();
-                fbCon.Close();
             }
             if (insRes == 1)
                 return Const.READ_SUCCESS;
@@ -191,7 +189,6 @@ namespace DataConverter
             finally
             {
                 fbComInsert.Dispose();
-                fbCon.Close();
             }
             if (insRes != 0)
                 return Const.READ_SUCCESS;
@@ -212,7 +209,7 @@ namespace DataConverter
                     MessageBox.Show("Err");
                 }
             }
-            String insertString = "INSERT INTO CLIENTS_DAYMONTH_SCHEDULE (CLIENT_ID,DAYMONTH,GRUZ_TYPE_ID,USED) VALUES('" + id.ToString() + "','" + dayMonth + "','2','" + used +"')";
+            String insertString = "INSERT INTO CLIENTS_DAYMONTH_SCHEDULE (CLIENT_ID,DAYMONTH,GRUZ_TYPE_ID,USED) VALUES('" + id.ToString() + "','" + dayMonth + "','2','" + used + "')";
             FbCommand fbComInsert = new FbCommand(insertString, fbCon);
             fbComInsert.Transaction = fbTrans;
             int insRes = 0;
@@ -233,7 +230,6 @@ namespace DataConverter
             finally
             {
                 fbComInsert.Dispose();
-                fbCon.Close();
             }
             if (insRes == 1)
                 return Const.READ_SUCCESS;
@@ -275,7 +271,6 @@ namespace DataConverter
             finally
             {
                 fbComInsert.Dispose();
-                fbCon.Close();
             }
             if (insRes != 0)
                 return Const.READ_SUCCESS;
@@ -296,7 +291,7 @@ namespace DataConverter
                     MessageBox.Show("Err");
                 }
             }
-            String insertString = "DELETE FROM GROUPCLIENTSSTRING WHERE GROUPCLIENTS_ID = '"+id+"'";
+            String insertString = "DELETE FROM GROUPCLIENTSSTRING WHERE GROUPCLIENTS_ID = '" + id + "'";
             FbCommand fbComInsert = new FbCommand(insertString, fbCon);
             fbComInsert.Transaction = fbTrans;
             int insRes = 0;
@@ -305,7 +300,7 @@ namespace DataConverter
                 insRes = fbComInsert.ExecuteNonQuery();
                 // MessageBox.Show("Success", "Insert Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 fbTrans.Rollback();
                 this.Close();
@@ -313,7 +308,6 @@ namespace DataConverter
             finally
             {
                 fbComInsert.Dispose();
-                fbCon.Close();
             }
             return Const.READ_SUCCESS;
         }
@@ -352,7 +346,6 @@ namespace DataConverter
             finally
             {
                 fbComInsert.Dispose();
-                fbCon.Close();
             }
             if (insRes != 0)
                 return Const.READ_SUCCESS;
@@ -394,7 +387,6 @@ namespace DataConverter
             finally
             {
                 fbComInsert.Dispose();
-                fbCon.Close();
             }
             if (insRes == 1)
                 return Const.READ_SUCCESS;
@@ -415,7 +407,15 @@ namespace DataConverter
                     MessageBox.Show("Err");
                 }
             }
-            String insertString = "INSERT INTO CLIENTS (ID,UNISTRING,NAME,FULLNAME,ADRESS,COMMENTS,UPLIMTIME0,DNLIMTIME0,USED,TIME_WAIT, CLIENTS_TYPE_ID) VALUES('" + id.ToString() + "','" + values.CPCode + "','" + values.CPName + "','" + values.CPOwner + "','" + values.CPAdress + "','" + values.CPComment + "','" + values.CPTimelineB + "','" + values.CPTimelineE + "','1','1','" + values.CPStatus + "')";
+            String insertString;
+            if (checkBox2.Checked)
+            {
+                insertString = "INSERT INTO CLIENTS (ID,UNISTRING,NAME,FULLNAME,ADRESS,COMMENTS,UPLIMTIME0,DNLIMTIME0,USED,TIME_WAIT, CLIENTS_TYPE_ID) VALUES('" + id.ToString() + "','" + values.CPCode + "','" + values.CPName + "','" + values.CPOwner + "','" + values.CPAdress + "','" + values.CPComment + "','" + values.CPTimelineB + "','" + values.CPTimelineE + "','1','1','" + values.CPStatus + "')";
+            }
+            else
+            {
+                insertString = "INSERT INTO CLIENTS (ID,UNISTRING,NAME,FULLNAME,ADRESS,COMMENTS,USED,TIME_WAIT, CLIENTS_TYPE_ID) VALUES('" + id.ToString() + "','" + values.CPCode + "','" + values.CPName + "','" + values.CPOwner + "','" + values.CPAdress + "','" + values.CPComment + "','1','1','" + values.CPStatus + "')";
+            }
             FbCommand fbComInsert = new FbCommand(insertString, fbCon);
             fbComInsert.Transaction = fbTrans;
             int insRes = 0;
@@ -477,7 +477,6 @@ namespace DataConverter
             finally
             {
                 fbComInsert.Dispose();
-                fbCon.Close();
             }
             if (insRes == 1)
                 return Const.READ_SUCCESS;
@@ -498,7 +497,15 @@ namespace DataConverter
                     MessageBox.Show("Err");
                 }
             }
-            String insertString = "UPDATE CLIENTS SET COMMENTS = '" + values.CPComment + "',UPLIMTIME0 = '" + values.CPTimelineB + "',DNLIMTIME0 = '" + values.CPTimelineE + "',CLIENTS_TYPE_ID = '" + values.CPStatus + "',adress = '"+ values.CPAdress+"' WHERE ID = '" + id.ToString() + "'";
+            String insertString;
+            if (checkBox2.Checked)
+            {
+                insertString = "UPDATE CLIENTS SET COMMENTS = '" + values.CPComment + "',UPLIMTIME0 = '" + values.CPTimelineB + "',DNLIMTIME0 = '" + values.CPTimelineE + "',CLIENTS_TYPE_ID = '" + values.CPStatus + "',adress = '" + values.CPAdress + "' WHERE ID = '" + id.ToString() + "'";
+            }
+            else
+            {
+                insertString = "UPDATE CLIENTS SET COMMENTS = '" + values.CPComment + "',CLIENTS_TYPE_ID = '" + values.CPStatus + "',adress = '" + values.CPAdress + "' WHERE ID = '" + id.ToString() + "'";
+            }
             FbCommand fbComUpdate = new FbCommand(insertString, fbCon);
             fbComUpdate.Transaction = fbTrans;
             int insRes = 0;
@@ -519,9 +526,8 @@ namespace DataConverter
             finally
             {
                 fbComUpdate.Dispose();
-                fbCon.Close();
             }
-            
+
             int count = selectCountQueryVariablesStringID(id.ToString());
             if (count != 0)
                 insertString = "UPDATE VARIABLES_STRING SET VALUE1 = '" + values.CPConCount + "' WHERE (CLIENT_ID = '" + id.ToString() + "' AND VARIABLES_ID = '61')";
@@ -568,8 +574,7 @@ namespace DataConverter
             finally
             {
                 fbComUpdate.Dispose();
-                fbCon.Close();
-            }              
+            }
             if (insRes != 0)
                 return Const.READ_SUCCESS;
             else
@@ -883,17 +888,8 @@ namespace DataConverter
                 int id = selectQueryMaxClientsId() + 1;
                 int i = 10;
                 List<Data> lData = new List<Data>();
-                Data tmp;
-                if (checkBox1.Checked == true)
-                {
-                    XmlSerializer serializer = new XmlSerializer(typeof(List<Data>));
-                    TextReader fileStream = new StreamReader("Backup.xml");
-                    lData = (List<Data>)serializer.Deserialize(fileStream);
-                    fileStream.Close();
-                }
-                else
-                {
-                    while (true)
+                Data tmp;    
+                while (true)
                     {
                         tmp = new Data();
                         i = excelDataToList(i, lData, tmp);
@@ -906,12 +902,7 @@ namespace DataConverter
                         {
                             break;
                         }
-                    }
-                    XmlSerializer serializer = new XmlSerializer(typeof(List<Data>));
-                    TextWriter fileStream = new StreamWriter("Backup.xml");
-                    serializer.Serialize(fileStream, lData);
-                    fileStream.Close();
-                }
+                    }                
                 int groupId = selectQueryMaxGroupClientsId() + 1;
                 for (i = 0; i < lGroupsClients.Count; i++)
                 {
@@ -1045,7 +1036,7 @@ namespace DataConverter
                     label2.Text = (i + 1).ToString() + "/" + lData.Count.ToString();
                     this.Refresh();
                 }
-            }           
+            }
             else
             {
                 MessageBox.Show("Проверьте подключение к серверу, и выберете файл для выгрузки", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1054,23 +1045,30 @@ namespace DataConverter
 
         private void Form2_FormClosing(object sender, FormClosingEventArgs e)
         {
-
             try
             {
-                ObjWorkBook.Close();
-                ObjExcel.Quit();
                 fbTrans.Commit();
-                fbCon.Close();
+                ObjExcel.Quit();               
             }
-            catch (Exception ex)
+            catch (System.NullReferenceException ex)
+            {
+                
+            }
+            catch(Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                if (fbCon.State != ConnectionState.Closed)
+                {
+                    fbCon.Close();
+                }
             }
         }
 
         private void button2_Click(object sender, EventArgs e)
-        {
-            button3.Enabled = false;
+        {           
             deleteQueryGroupClientsString();
         }
 
@@ -1104,22 +1102,22 @@ namespace DataConverter
             finally
             {
                 fbComInsert.Dispose();
-                fbCon.Close();
+               // fbCon.Close();
             }
             return Const.READ_SUCCESS;
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        /*private void button4_Click(object sender, EventArgs e)
         {
             selectTimes();
             for (int i = 0; i < listTimes.Count; i++)
             {
                 insertTimes((Convert.ToDateTime(listTimes[i][1]).AddMinutes(-30)).ToString(), (Convert.ToDateTime(listTimes[i][1]).AddMinutes(30)).ToString(), listTimes[i][0]);
             }
-        }
+        }*/
 
-        private void selectTimes()
-        {            
+        /*private void selectTimes()
+        {
             if (fbCon.State == ConnectionState.Closed)
             {
                 try
@@ -1136,7 +1134,7 @@ namespace DataConverter
                                   "ts.reason_time as fact_time " +
                                   "from travelsheet_model  tm " +
                                     " left join travelsheet t on t.travelsheet_model_id=tm.id" +
-                                    " left join travelsheetstring ts on ts.travel_id=t.id" +                                   
+                                    " left join travelsheetstring ts on ts.travel_id=t.id" +
                                     " left join clients c on c.id=ts.client_id" +
                                     " left join variables_string v on v.client_id = c.id" +
                                   " where tm.model_name_id is not null and t.status = '5' and t.docdate >= '" + dateTimePicker1.Value.ToShortDateString() + "' and t.docdate <= '" + dateTimePicker1.Value.ToShortDateString() + "' and v.variables_id = '61'and ts.reason_time is not null";
@@ -1150,7 +1148,7 @@ namespace DataConverter
                 {
                     listTimes.Add(new List<String>());
                     listTimes[listTimes.Count - 1].Add(String.Copy(selectResult.GetString(0)));
-                    listTimes[listTimes.Count - 1].Add(String.Copy(selectResult.GetString(1)));                   
+                    listTimes[listTimes.Count - 1].Add(String.Copy(selectResult.GetString(1)));
                 }
             }
             catch (Exception e)
@@ -1161,12 +1159,10 @@ namespace DataConverter
             {
                 fbComSelect.Dispose();
                 selectResult.Dispose();
-                fbTrans.Dispose();
-                fbCon.Close();
-            }           
+            }
         }
-
-        private int insertTimes(string time1,string time2,string id)
+        */
+        /*private int insertTimes(string time1, string time2, string id)
         {
             if (fbCon.State == ConnectionState.Closed)
             {
@@ -1186,7 +1182,7 @@ namespace DataConverter
             try
             {
                 insRes = fbComInsert.ExecuteNonQuery();
-                
+
             }
             catch (Exception e)
             {
@@ -1196,18 +1192,107 @@ namespace DataConverter
             finally
             {
                 fbComInsert.Dispose();
-                fbCon.Close();
+            }
+            return Const.READ_SUCCESS;
+        }*/
+
+       /* private void button5_Click(object sender, EventArgs e)
+        {
+            updatePriority(12,textBox5.Text,textBox1.Text,textBox2.Text,textBox3.Text,textBox4.Text);
+        }
+
+
+        // id 12,13,14 update ;112,113,114 clear one ;2 - clear all
+        private int updatePriority(int iAfter,String name,String time1St,String time1Fn,String time2St,String time2Fn)
+        {
+            if (fbCon.State == ConnectionState.Closed)
+            {
+                try
+                {
+                    fbCon.Open();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Err");
+                }
+            }
+            String insertString = "";
+            if (iAfter == 12 || iAfter == 13 || iAfter==14)
+            {
+                insertString = "update clients c set c.priorities_id='"+iAfter.ToString()+"' where c.id in  (select c.id from  clients c where c.uplimtime0<>'' and " +
+                               "c.uplimtime0<>'00:00' and cast (c.uplimtime0 as time)>'" + time1St + "' and cast (c.uplimtime0 as time)<='" + time1Fn + "'" +
+                               "and c.dnlimtime0<>'' and c.dnlimtime0<>'00:00' and cast (c.dnlimtime0 as time)>'" + time2St + "' and cast (c.dnlimtime0 as time)<='" + time2Fn + "'" +
+                               "and c.id in(select gs.client_id from groupclientsstring gs  join groupclients g on gs.groupclients_id=g.id where g.name='"+name+"')) and c.dnlimtime0 is not null and c.uplimtime0 is not null";
+            }
+            else if (iAfter == 112 || iAfter == 113 || iAfter == 114)
+            {
+                insertString = "update clients c set c.priorities_id=null where c.priorities_id='" + (iAfter - 100).ToString() + "' and c.id in(select gs.client_id from groupclientsstring gs  join groupclients g on gs.groupclients_id=g.id where g.name='" + name + "')";
+            }           
+            else if(iAfter==2)
+            {
+                insertString = "update clients c set c.priorities_id=null";
+            }           
+            FbCommand fbComInsert = new FbCommand(insertString, fbCon);
+            fbComInsert.Transaction = fbTrans;
+            int insRes = 0;
+            try
+            {
+                insRes = fbComInsert.ExecuteNonQuery();
+
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                fbTrans.Rollback();
+                this.Close();
+            }
+            finally
+            {
+                fbComInsert.Dispose();
             }
             return Const.READ_SUCCESS;
         }
 
-        private void button5_Click(object sender, EventArgs e)
+        private void button6_Click(object sender, EventArgs e)
         {
-            updatePriority(true);
-            updatePriority(false);
+            updatePriority(13, textBox5.Text, textBox1.Text, textBox2.Text, textBox3.Text, textBox4.Text);
         }
 
-        private int updatePriority(bool bAfter)
+        private void button7_Click(object sender, EventArgs e)
+        {
+            updatePriority(14, textBox5.Text, textBox1.Text, textBox2.Text, textBox3.Text, textBox4.Text);
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            updatePriority(112, textBox5.Text, textBox1.Text, textBox2.Text, textBox3.Text, textBox4.Text);
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            updatePriority(113, textBox5.Text, textBox1.Text, textBox2.Text, textBox3.Text, textBox4.Text);
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            updatePriority(114, textBox5.Text, textBox1.Text, textBox2.Text, textBox3.Text, textBox4.Text);
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            updatePriority(2, textBox5.Text, textBox1.Text, textBox2.Text, textBox3.Text, textBox4.Text);
+        }*/
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Уверены?", "?", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
+            {
+                deleteQueryScheduleAll(true);
+                deleteQueryScheduleAll(false);
+            }
+        }
+
+        private int deleteQueryScheduleAll(bool b)
         {
             if (fbCon.State == ConnectionState.Closed)
             {
@@ -1221,15 +1306,13 @@ namespace DataConverter
                 }
             }
             String insertString;
-            if (bAfter)
+            if(b)
             {
-                insertString = "update clients c set c.priorities_id=12 where c.id in  (select c.id from  clients c where c.dnlimtime0<>'' and " +
-                               "c.dnlimtime0<>'00:00' and cast (c.dnlimtime0 as time)<='13:00')";
+                insertString = "delete from clients_delivery_schedule";
             }
             else
             {
-                insertString = "update clients c set c.priorities_id=13 where c.id in  (select c.id from  clients c where c.dnlimtime0<>'' and " +
-                               "c.dnlimtime0<>'00:00' and cast (c.dnlimtime0 as time)>='13:00')";
+                insertString = "delete from clients_daymonth_schedule";
             }
             FbCommand fbComInsert = new FbCommand(insertString, fbCon);
             fbComInsert.Transaction = fbTrans;
@@ -1237,20 +1320,29 @@ namespace DataConverter
             try
             {
                 insRes = fbComInsert.ExecuteNonQuery();
-
+                if (insRes != 0)
+                {
+                    // MessageBox.Show("Success", "Insert Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message,"Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 fbTrans.Rollback();
+                MessageBox.Show("Insert Error:" + e.Message + "\nЗапись приостановлена", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.Close();
             }
             finally
             {
                 fbComInsert.Dispose();
-                fbCon.Close();
             }
-            return Const.READ_SUCCESS;
-        }
+            if (insRes != 0)
+                return Const.READ_SUCCESS;
+            else
+                return Const.READ_ERROR;
+        }       
+
+        
     }
 }
+
+

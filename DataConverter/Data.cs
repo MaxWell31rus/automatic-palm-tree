@@ -111,22 +111,7 @@ namespace DataConverter
             countParams = Const.IDX_ARR.Count();
         }
 
-        public Data(int cnt)
-        {
-            _CPName = "";
-            _CPAdress = "";
-            _CPCode = "";
-            _CPOwner = "";
-            _CPConCount = "";
-            _CPSchedule.Add("");
-            _CPType = "";
-            _CPTimelineB = "";
-            _CPTimelineE = "";
-            _CPStatus = "";
-            _CPComment = "";
-            _CPGroupClient = "";
-            countParams = cnt;
-        }
+
 
         public int dataReadFromExcel(Microsoft.Office.Interop.Excel.Worksheet ObjWorkSheet, int i, List<Data> data, List<String> lDuplicate, List<String> lClientsGroups)
         {
@@ -155,18 +140,6 @@ namespace DataConverter
                 this._CPSchedule.Add(range[3].Text);
                 this.dateConvert();
                 this._CPAdress = range[4].Text + ", " + range[5].Text + ", " + range[6].Text;
-               /* if (houseCheck(range[5].Text) == Const.EXIST)
-                {
-                    this._CPAdress += "*";
-                }
-                else
-                {
-                    this._CPAdress += range[5].Text;
-                }*/
-              //  timeConvert(out this._CPTimelineB,out this._CPTimelineE,range[6].Text);
-              //  this._CPType = "0";
-              //  this._CPConCount = "0";
-                
                 this._CPTimelineB = range[7].Text;
                 if (_CPTimelineB.Count() > 5)
                 {
@@ -191,8 +164,8 @@ namespace DataConverter
                         this._CPTimelineE = this._CPTimelineE.Substring(0, 4);
                     }
                 }
-                 
-                if (String.Compare(range[9].Text,"") == 0)
+
+                if (String.Compare(range[9].Text, "") == 0)
                 {
 
                     this._CPConCount = "1";
@@ -212,7 +185,7 @@ namespace DataConverter
                 }
                 this._CPStatus = range[13].Text;
                 this.statusConvert();
-                if (String.Compare(range[12].Text, "")!=0)
+                if (String.Compare(range[12].Text, "") != 0)
                 {
                     this._CPGroupClient = range[12].Text;
                     if (!(lClientsGroups.Contains(range[12].Text)))
@@ -236,31 +209,93 @@ namespace DataConverter
 
         }
 
-        public string streetNameConverter(String streetName)
+        public int dataReadFromExcel(Microsoft.Office.Interop.Excel.Worksheet ObjWorkSheet, int i, List<Data> data)
         {
-            String newStreetName = streetName;
-            if (streetNameCheck(streetName) == Const.FIND_SUCCESS)
+            bool flag = true;
+            List<Microsoft.Office.Interop.Excel.Range> range = new List<Microsoft.Office.Interop.Excel.Range>();
+            try
             {
-                newStreetName += " Проспект";
+                for (int j = 0; j < Const.IDX_ARR.Count(); j++)
+                {
+                    range.Add(ObjWorkSheet.Cells[i, Const.IDX_ARR[j]]);
+                }
+            }
+            catch (Exception e)
+            {
+                flag = false;
+            }
+            if (flag)
+            {
+                this._CPCode = range[0].Text;
+                this._CPName = range[1].Text;
+                this._CPOwner = range[2].Text;
+                this._CPSchedule.Add(range[3].Text);
+                this._CPAdress = range[4].Text + ", " + range[5].Text + ", " + range[6].Text;
+                this._CPTimelineB = range[7].Text;
+                if (_CPTimelineB.Count() > 5)
+                {
+                    if (this._CPTimelineB[4] != ':')
+                    {
+                        this._CPTimelineB = this._CPTimelineB.Substring(0, 5);
+                    }
+                    else
+                    {
+                        this._CPTimelineB = this._CPTimelineB.Substring(0, 4);
+                    }
+                }
+                this._CPTimelineE = range[8].Text;
+                if (_CPTimelineE.Count() > 5)
+                {
+                    if (this._CPTimelineE[4] != ':')
+                    {
+                        this._CPTimelineE = this._CPTimelineE.Substring(0, 5);
+                    }
+                    else
+                    {
+                        this._CPTimelineE = this._CPTimelineE.Substring(0, 4);
+                    }
+                }
+
+                if (String.Compare(range[9].Text, "") == 0)
+                {
+
+                    this._CPConCount = "1";
+                }
+                else
+                {
+
+                    this._CPConCount = range[9].Text;
+                }
+                this._CPType = range[10].Text;
+                this.typeConvert();
+                this._CPComment = range[11].Text;
+                if (this._CPComment.Length > 149)
+                {
+                    string str = this._CPComment.Remove(148);
+                    this._CPComment = str;
+                }
+                this._CPStatus = range[13].Text;
+                this.statusConvert();
+
+                this._CPGroupClient = range[12].Text;
+
+
             }
             else
             {
-                newStreetName += " Улица";
+                this._CPCode = "";
             }
-            return newStreetName;
+            if (this._CPCode != "")
+            {
+                return Const.READ_SUCCESS;
+            }
+            else
+            {
+                return Const.READ_ERROR;
+            }
+
         }
 
-        public int streetNameCheck(String streetName)
-        {
-            if (Const.AVENUE.Contains(streetName.ToLower()))
-            {
-                return Const.FIND_SUCCESS;
-            }
-            else
-            {
-                return Const.FIND_ERROR;
-            }
-        }
 
         public void typeConvert()
         {
@@ -271,7 +306,7 @@ namespace DataConverter
                 str = this._CPType.ToCharArray();
             }
             else
-            {             
+            {
                 this._CPType = "1";
                 return;
             }
@@ -280,7 +315,7 @@ namespace DataConverter
             {
                 if (str[i] != ' ' && str[i] != 'м')
                 {
-                    if (str[i]==',')
+                    if (str[i] == ',')
                     {
                         str[i] = '.';
                     }
@@ -294,19 +329,7 @@ namespace DataConverter
             }
         }
 
-        public int houseCheck(String housesNmb)
-        {
-            char[] sep = { ',' };
-            String[] tmp = housesNmb.Split(sep);
-            if (tmp.Count() > 1)
-            {
-                return Const.EXIST;
-            }
-            else
-            {
-                return Const.NOT_EXIST;
-            }
-        }
+
 
         static public int findId(String id, List<Data> data, List<String> lDuplicate)
         {
@@ -439,51 +462,7 @@ namespace DataConverter
             }
         }
 
-        public void timeConvert(out String timeB ,out  String timeE, String time)
-        {
-            timeB = "";
-            timeE = "";
-            char[] sep = {'-'};
-            if (String.Compare(time, "") != 0)
-            {
-                string[] str = time.Split(sep);
-                if (str.Count() > 1)
-                {
-                    if (String.Compare(str[0], "") != 0)
-                    {
-                        timeB = String.Copy(str[0]);
-                        if (String.Compare(str[1], "") != 0)
-                        {
-                            timeE = String.Copy(str[1]);
-                        }
-                    }
-                    else
-                    {
-                        timeB = "";
-                        timeE = "";
-                    }
-                }
 
-            }
-            else
-            {
-                timeB = "";
-                timeE = "";
-            }
-        }
-
-        private String tmpAdress(String tmp)
-        {
-            String str = String.Copy(this._CPName);
-            String[] arrStr = str.Split(' ');
-            arrStr[0] += ", ";
-            if (String.Compare(tmp.ToLower(), "село") != 0)
-            {
-                return arrStr[0];
-            }
-            else return "";
-
-        }
 
         public void statusConvert()
         {
@@ -499,6 +478,23 @@ namespace DataConverter
                 string[] str = { "3", "1" };
                 this._CPSchedule = new List<string>(str);
             }
+        }
+
+        public static int Compare(Data Old, Data New)
+        {
+            if (String.Compare(Old._CPAdress, New._CPAdress) == 0)
+                if (String.Compare(Old._CPName, New._CPName) == 0)
+                    if (String.Compare(Old._CPOwner, New._CPOwner) == 0)
+                        if (String.Compare(Old._CPSchedule[1], New._CPSchedule[1]) == 0)
+                            return 1;
+                        else
+                            return 0;
+                    else
+                        return 0;
+                else
+                    return 0;
+            else
+                return 0;
         }
 
         ~Data()

@@ -118,7 +118,7 @@ namespace DataConverter
                     MessageBox.Show("Err");
                 }
             }
-            String insertString = "UPDATE CLIENTS SET GPS_X = '" + x + "',GPS_Y = '" + y + "',GPS_X_MOBILE = '" + x + "',GPS_Y_MOBILE = '" + y + "',DIFF_GPS_DIST = '1' WHERE ID = '" + id + "'";
+            String insertString = "UPDATE CLIENTS SET GPS_X = '" + x + "',GPS_Y = '" + y + "',GPS_X_MOBILE = '" + x + "',GPS_Y_MOBILE = '" + y + "',DIFF_GPS_DIST = '2' WHERE ID = '" + id + "'";
             FbCommand fbComUpdate = new FbCommand(insertString, fbCon);
             fbComUpdate.Transaction = fbTrans;
             int insRes = 0;
@@ -140,7 +140,6 @@ namespace DataConverter
             finally
             {
                 fbComUpdate.Dispose();
-                fbCon.Close();
                 if(close)
                 {
                     this.Close();
@@ -189,18 +188,113 @@ namespace DataConverter
                 id = selectQueryClientsId(textBox6.Text);
                 if (UpdateQueryCLIENTS(strX, strY, id.ToString()) == 0)
                     MessageBox.Show("Err");
+                if (selectCountQueryKeysId() > 0)
+                    UpdateQueryKeys();
             }
             
         }
 
         private void GPS_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Owner.Show();
+            try
+            {
+                fbTrans.Commit();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                if (fbCon.State != ConnectionState.Closed)
+                {
+                    fbCon.Close();
+                }
+                fbTrans.Dispose();
+            }
         }
 
-        private void label4_Click(object sender, EventArgs e)
-        {
 
+        private int selectCountQueryKeysId()
+        {
+            if (fbCon.State == ConnectionState.Closed)
+            {
+                try
+                {
+                    fbCon.Open();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Err");
+                }
+            }
+            String selectString = "SELECT COUNT(client_unistring) FROM keys WHERE client_UNISTRING = '" + textBox1.Text + "' GROUP BY client_UNISTRING";
+            FbCommand fbComSelect = new FbCommand(selectString, fbCon);
+            fbComSelect.Transaction = fbTrans;
+            int selectResult = 0;
+            try
+            {
+                object obj = fbComSelect.ExecuteScalar();
+                if (obj != null)
+                {
+                    selectResult = Convert.ToInt32(obj.ToString());
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+            finally
+            {
+                fbComSelect.Dispose();
+            }
+            return selectResult;
+        }
+
+        private int UpdateQueryKeys()
+        {
+            if (fbCon.State == ConnectionState.Closed)
+            {
+                try
+                {
+                    fbCon.Open();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Err");
+                }
+            }
+            String insertString = "UPDATE Keys SET client_unistring = '" + textBox6.Text + "' where client_unistring='"+textBox1.Text+"'";
+            FbCommand fbComUpdate = new FbCommand(insertString, fbCon);
+            fbComUpdate.Transaction = fbTrans;
+            int insRes = 0;
+            bool close = false;
+            try
+            {
+                insRes = fbComUpdate.ExecuteNonQuery();
+                if (insRes == 0)
+                {
+                    MessageBox.Show("Andrey ti pidoras nepravilno vvel suka");
+                }
+            }
+            catch (Exception e)
+            {
+                fbTrans.Rollback();
+                close = true;
+                MessageBox.Show("Insert Error:" + e.Message + "\nЗапись приостановлена", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                fbComUpdate.Dispose();
+                if (close)
+                {
+                    this.Close();
+                }
+            }
+            if (insRes != 0)
+                return Const.READ_SUCCESS;
+            else
+                return Const.READ_ERROR;
         }
     }
 }

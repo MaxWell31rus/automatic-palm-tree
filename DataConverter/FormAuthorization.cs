@@ -20,6 +20,7 @@ namespace DataConverter
         LogistPanel formLogist;
         public FbConnection fbCon;
         public FbTransaction fbTrans;
+        public string login = "";
         public FormAuthorization()
         {            
             InitializeComponent();
@@ -28,33 +29,34 @@ namespace DataConverter
 
         private void button1_Click(object sender, EventArgs e)
         {
-            formAdmin = new AdminPanel(this, fbCon);
+            /*formAdmin = new AdminPanel(this, fbCon);
             fbCon.Close();
             formAdmin.Show();
-            this.Hide();
-            /*String role = null;
+            this.Hide();*/
+            String role = null;
             role = authDataFinder(textBox1.Text,textBox2.Text);
+            String.Concat(login,textBox1.Text);
             if(role != null)
             {
                 switch (role)
                 {
                     case "Admin":
                         {
-                            formAdmin = new AdminPanel(this, fbCon);
+                            formAdmin = new AdminPanel(this, fbCon,login);
                             formAdmin.Show();
                             this.Hide();
                             break;
                         }
                     case "Logist":
                         {
-                            formLogist = new LogistPanel(this, fbCon);
+                            formLogist = new LogistPanel(this, fbCon,login);
                             formLogist.Show();
                             this.Hide();
                             break;                            
                         }
                     case "Dispatcher":
                         {
-                            formDispatcher = new DispatcherPanel(this, fbCon);
+                            formDispatcher = new DispatcherPanel(this, fbCon,login);
                             formDispatcher.Show();
                             this.Hide();
                             break;
@@ -65,7 +67,7 @@ namespace DataConverter
             else
             {
                 MessageBox.Show("Неправильно введена пара логин,пароль", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }*/
+            }
         }
 
         private void ConnectionON()
